@@ -1,6 +1,8 @@
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Shield, BookOpen } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Shield, BookOpen, Play } from 'lucide-react';
 
 export default function StewardshipCases() {
   const cases = [
@@ -128,9 +130,18 @@ export default function StewardshipCases() {
                     </ul>
                   </div>
                   <div className="pt-3 border-t">
-                    <p className="text-sm text-muted-foreground italic">
-                      Full interactive case coming soon
-                    </p>
+                    {(caseItem.id === 'chest-pain' || caseItem.id === 'dvt-evaluation') ? (
+                      <Link to={`/stewardship/case/${caseItem.id}`}>
+                        <Button className="w-full">
+                          <Play className="h-4 w-4 mr-2" />
+                          Start Case
+                        </Button>
+                      </Link>
+                    ) : (
+                      <p className="text-sm text-muted-foreground italic">
+                        Full interactive case coming soon
+                      </p>
+                    )}
                   </div>
                 </div>
               </CardContent>

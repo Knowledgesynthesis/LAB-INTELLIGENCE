@@ -9,8 +9,11 @@ import ROCExplorer from './pages/ROCExplorer';
 import PPVNPVExplorer from './pages/PPVNPVExplorer';
 import TestCascade from './pages/TestCascade';
 import StewardshipCases from './pages/StewardshipCases';
+import CaseViewer from './pages/CaseViewer';
 import LearningModules from './pages/LearningModules';
+import ModuleViewer from './pages/ModuleViewer';
 import Assessment from './pages/Assessment';
+import AssessmentQuiz from './pages/AssessmentQuiz';
 import Glossary from './pages/Glossary';
 import Settings from './pages/Settings';
 
@@ -36,8 +39,11 @@ function App() {
           <Route path="/ppv-npv" element={<PPVNPVExplorer />} />
           <Route path="/cascade" element={<TestCascade />} />
           <Route path="/stewardship" element={<StewardshipCases />} />
+          <Route path="/stewardship/case/:caseId" element={<CaseViewer />} />
           <Route path="/modules" element={<LearningModules />} />
+          <Route path="/modules/:moduleId" element={<ModuleViewer />} />
           <Route path="/assessment" element={<Assessment />} />
+          <Route path="/assessment/:assessmentId" element={<AssessmentQuiz />} />
           <Route path="/glossary" element={<Glossary />} />
           <Route path="/settings" element={<Settings />} />
         </Routes>

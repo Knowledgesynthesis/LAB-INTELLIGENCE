@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -134,10 +135,19 @@ export default function Assessment() {
                     <p className="text-orange-600 dark:text-orange-400 font-bold">Not Started</p>
                   </div>
                 </div>
-                <Button className="w-full">
-                  <CheckSquare className="h-4 w-4 mr-2" />
-                  Start Assessment
-                </Button>
+                {(assessment.id === 'foundations-quiz' || assessment.id === 'bayesian-quiz' || assessment.id === 'ppv-npv-mastery') ? (
+                  <Link to={`/assessment/${assessment.id}`}>
+                    <Button className="w-full">
+                      <CheckSquare className="h-4 w-4 mr-2" />
+                      Start Assessment
+                    </Button>
+                  </Link>
+                ) : (
+                  <Button className="w-full" disabled>
+                    <CheckSquare className="h-4 w-4 mr-2" />
+                    Coming Soon
+                  </Button>
+                )}
               </CardContent>
             </Card>
           ))}
