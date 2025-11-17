@@ -315,6 +315,234 @@ const cases: Record<string, CaseData> = {
         ]
       }
     }
+  },
+  'uti-screening': {
+    id: 'uti-screening',
+    title: 'Asymptomatic Bacteriuria',
+    description: 'When to treat (and not treat) positive urine cultures in asymptomatic patients',
+    learningObjectives: [
+      'Distinguish colonization from infection',
+      'Avoid unnecessary antibiotic use',
+      'Understand stewardship principles'
+    ],
+    initialDecision: 'initial',
+    decisions: {
+      initial: {
+        id: 'initial',
+        prompt: 'Initial Presentation',
+        situation: '78-year-old woman with dementia in nursing home. Routine urinalysis shows: WBC 50-100, bacteria many, nitrites positive. Patient is afebrile, eating well, no dysuria, no change in mental status. Vital signs stable.',
+        options: [
+          {
+            id: 'start-antibiotics',
+            text: 'Start antibiotics for UTI',
+            isOptimal: false,
+            feedback: 'Inappropriate',
+            consequences: 'This is asymptomatic bacteriuria, not UTI. Treating increases antibiotic resistance, C. diff risk, and adverse effects without benefit.',
+            stewardshipPoints: -25,
+            nextDecisionId: 'after-antibiotics'
+          },
+          {
+            id: 'no-treatment',
+            text: 'No antibiotics - this is colonization',
+            isOptimal: true,
+            feedback: 'Excellent stewardship!',
+            consequences: 'Correct. Asymptomatic bacteriuria should NOT be treated (except in pregnancy or before urologic procedures). Treatment does not improve outcomes.',
+            stewardshipPoints: 30,
+            nextDecisionId: 'education'
+          },
+          {
+            id: 'repeat-culture',
+            text: 'Repeat urine culture',
+            isOptimal: false,
+            feedback: 'Unnecessary',
+            consequences: 'Repeating the culture will not change management. The patient is asymptomatic.',
+            stewardshipPoints: -10,
+            nextDecisionId: 'education'
+          }
+        ]
+      },
+      'after-antibiotics': {
+        id: 'after-antibiotics',
+        prompt: 'One Week Later',
+        situation: 'Patient develops diarrhea. C. difficile test is positive. Now requires isolation and treatment.',
+        options: [
+          {
+            id: 'treat-cdiff',
+            text: 'Treat C. difficile infection',
+            isOptimal: true,
+            feedback: 'Necessary but preventable',
+            consequences: 'You must treat the C. diff, but this was caused by unnecessary antibiotic use for asymptomatic bacteriuria.',
+            stewardshipPoints: -15
+          }
+        ]
+      },
+      'education': {
+        id: 'education',
+        prompt: 'Nursing Home Follow-up',
+        situation: 'Nursing staff asks: "Should we get urine cultures on residents with confusion?"',
+        options: [
+          {
+            id: 'educate-correct',
+            text: 'No - only test if symptomatic (fever, dysuria, acute change)',
+            isOptimal: true,
+            feedback: 'Excellent teaching!',
+            consequences: 'You correctly educated staff about appropriate UTI diagnosis. Confusion alone is not an indication for urine testing.',
+            stewardshipPoints: 25
+          },
+          {
+            id: 'routine-testing',
+            text: 'Yes - routine screening is good practice',
+            isOptimal: false,
+            feedback: 'Incorrect',
+            consequences: 'Routine screening leads to overtreatment of asymptomatic bacteriuria. Test only with UTI symptoms.',
+            stewardshipPoints: -20
+          }
+        ]
+      }
+    }
+  },
+  'thyroid-testing': {
+    id: 'thyroid-testing',
+    title: 'Thyroid Function Testing',
+    description: 'Appropriate use of TSH vs full thyroid panel',
+    learningObjectives: [
+      'TSH-first approach',
+      'Avoid reflexive T4/T3 ordering',
+      'Understand test cascades'
+    ],
+    initialDecision: 'initial',
+    decisions: {
+      initial: {
+        id: 'initial',
+        prompt: 'Initial Presentation',
+        situation: '42-year-old woman with fatigue for 3 months. No weight change, no heat/cold intolerance. No prior thyroid disease. Exam normal.',
+        options: [
+          {
+            id: 'full-panel',
+            text: 'Order full thyroid panel (TSH, free T4, free T3, TPO antibodies)',
+            isOptimal: false,
+            feedback: 'Overutilization',
+            consequences: 'Full panel is unnecessary as initial test. TSH alone is the recommended screening test.',
+            stewardshipPoints: -15,
+            nextDecisionId: 'panel-results'
+          },
+          {
+            id: 'tsh-only',
+            text: 'Order TSH only',
+            isOptimal: true,
+            feedback: 'Perfect stewardship!',
+            consequences: 'Correct TSH-first approach. If abnormal, reflex testing will follow based on TSH result.',
+            stewardshipPoints: 25,
+            nextDecisionId: 'tsh-result'
+          },
+          {
+            id: 'no-testing',
+            text: 'No testing - reassure patient',
+            isOptimal: false,
+            feedback: 'Too dismissive',
+            consequences: 'Some evaluation is reasonable for persistent fatigue. TSH is appropriate screening.',
+            stewardshipPoints: -5,
+            nextDecisionId: 'tsh-result'
+          }
+        ]
+      },
+      'tsh-result': {
+        id: 'tsh-result',
+        prompt: 'TSH Result',
+        situation: 'TSH returns at 2.1 mIU/L (normal range 0.4-4.0). Patient is euthyroid.',
+        options: [
+          {
+            id: 'reflexive-t4',
+            text: 'Order free T4 and T3 to be thorough',
+            isOptimal: false,
+            feedback: 'Unnecessary cascade',
+            consequences: 'Normal TSH effectively rules out thyroid dysfunction. Further testing adds no value and may find incidental abnormalities.',
+            stewardshipPoints: -20,
+            nextDecisionId: 'cascade'
+          },
+          {
+            id: 'stop-testing',
+            text: 'No further thyroid testing needed',
+            isOptimal: true,
+            feedback: 'Excellent!',
+            consequences: 'Normal TSH rules out primary thyroid disease. You avoided unnecessary testing.',
+            stewardshipPoints: 30,
+            nextDecisionId: 'alternative'
+          }
+        ]
+      },
+      'panel-results': {
+        id: 'panel-results',
+        prompt: 'Full Panel Results',
+        situation: 'TSH 2.1 (normal), free T4 1.2 (normal), free T3 3.1 (normal), TPO antibodies 35 (mildly elevated but TSH normal).',
+        options: [
+          {
+            id: 'treat-antibodies',
+            text: 'Start levothyroxine for positive antibodies',
+            isOptimal: false,
+            feedback: 'Inappropriate',
+            consequences: 'With normal TSH, elevated antibodies alone are not an indication for treatment. You would be treating a lab value, not a patient.',
+            stewardshipPoints: -25
+          },
+          {
+            id: 'observation',
+            text: 'Observation - all clinically relevant values normal',
+            isOptimal: true,
+            feedback: 'Correct',
+            consequences: 'Appropriate. TPO antibodies predict future hypothyroidism but do not indicate treatment now. Monitor TSH if symptoms develop.',
+            stewardshipPoints: 15,
+            nextDecisionId: 'alternative'
+          }
+        ]
+      },
+      'cascade': {
+        id: 'cascade',
+        prompt: 'Cascade Triggered',
+        situation: 'Free T4 comes back at 1.8 ng/dL (normal 0.8-1.8, high-normal). Patient now worried about "borderline" results.',
+        options: [
+          {
+            id: 'more-testing',
+            text: 'Order repeat testing and endocrine referral',
+            isOptimal: false,
+            feedback: 'Cascade continues',
+            consequences: 'High-normal T4 with normal TSH is not pathologic. You have created anxiety and cost with unnecessary testing.',
+            stewardshipPoints: -15
+          },
+          {
+            id: 'reassure',
+            text: 'Reassure - values are within normal range',
+            isOptimal: true,
+            feedback: 'Good recovery',
+            consequences: 'You appropriately counsel patient that values in normal range do not require action.',
+            stewardshipPoints: 10,
+            nextDecisionId: 'alternative'
+          }
+        ]
+      },
+      'alternative': {
+        id: 'alternative',
+        prompt: 'Addressing Fatigue',
+        situation: 'Thyroid normal. What is your next step for persistent fatigue?',
+        options: [
+          {
+            id: 'appropriate-workup',
+            text: 'Consider other causes: CBC, CMP, depression screening',
+            isOptimal: true,
+            feedback: 'Appropriate',
+            consequences: 'You appropriately shifted focus to other common causes of fatigue after ruling out thyroid disease.',
+            stewardshipPoints: 20
+          },
+          {
+            id: 'repeat-thyroid',
+            text: 'Repeat thyroid panel in 1 month',
+            isOptimal: false,
+            feedback: 'Unnecessary',
+            consequences: 'With normal TSH, repeat testing in 1 month will not change management. Focus on other causes.',
+            stewardshipPoints: -15
+          }
+        ]
+      }
+    }
   }
 };
 
@@ -324,6 +552,7 @@ export default function CaseViewer() {
   const [currentDecisionId, setCurrentDecisionId] = useState<string>('initial');
   const [totalPoints, setTotalPoints] = useState(0);
   const [selectedPath, setSelectedPath] = useState<string[]>([]);
+  const [currentSelection, setCurrentSelection] = useState<string | null>(null);
   const [completed, setCompleted] = useState(false);
 
   const caseData = caseId ? cases[caseId] : null;
@@ -348,11 +577,13 @@ export default function CaseViewer() {
 
   const handleOptionSelect = (option: CaseOption) => {
     setSelectedPath([...selectedPath, option.id]);
+    setCurrentSelection(option.id);
     setTotalPoints(totalPoints + option.stewardshipPoints);
 
     if (option.nextDecisionId) {
       setTimeout(() => {
         setCurrentDecisionId(option.nextDecisionId!);
+        setCurrentSelection(null); // Reset selection for new decision
       }, 2000);
     } else {
       setCompleted(true);
@@ -363,6 +594,7 @@ export default function CaseViewer() {
     setCurrentDecisionId('initial');
     setTotalPoints(0);
     setSelectedPath([]);
+    setCurrentSelection(null);
     setCompleted(false);
   };
 
@@ -428,7 +660,7 @@ export default function CaseViewer() {
               <p className="font-medium">What do you do?</p>
               <div className="grid gap-3">
                 {currentDecision.options.map((option) => {
-                  const isSelected = selectedPath[selectedPath.length - 1] === option.id;
+                  const isSelected = currentSelection === option.id;
                   const showFeedback = isSelected;
 
                   return (
@@ -436,8 +668,8 @@ export default function CaseViewer() {
                       <Button
                         variant={isSelected ? 'default' : 'outline'}
                         className="w-full justify-start text-left h-auto py-3 px-4"
-                        onClick={() => !selectedPath.includes(option.id) && handleOptionSelect(option)}
-                        disabled={selectedPath.length > 0 && selectedPath[selectedPath.length - 1] !== option.id}
+                        onClick={() => !currentSelection && handleOptionSelect(option)}
+                        disabled={currentSelection !== null && currentSelection !== option.id}
                       >
                         {option.text}
                       </Button>
