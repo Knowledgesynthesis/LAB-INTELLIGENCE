@@ -130,18 +130,12 @@ export default function StewardshipCases() {
                     </ul>
                   </div>
                   <div className="pt-3 border-t">
-                    {(caseItem.id === 'chest-pain' || caseItem.id === 'dvt-evaluation') ? (
-                      <Link to={`/stewardship/case/${caseItem.id}`}>
-                        <Button className="w-full">
-                          <Play className="h-4 w-4 mr-2" />
-                          Start Case
-                        </Button>
-                      </Link>
-                    ) : (
-                      <p className="text-sm text-muted-foreground italic">
-                        Full interactive case coming soon
-                      </p>
-                    )}
+                    <Link to={`/stewardship/case/${caseItem.id}`}>
+                      <Button className="w-full">
+                        <Play className="h-4 w-4 mr-2" />
+                        Start Case
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               </CardContent>

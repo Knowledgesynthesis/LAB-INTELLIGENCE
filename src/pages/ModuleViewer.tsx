@@ -4,8 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, CheckCircle, Clock } from 'lucide-react';
 import { useAppStore } from '@/stores/appStore';
+import { additionalModules } from '@/data/additionalModules';
 
-interface ModuleContent {
+export interface ModuleContent {
   id: string;
   title: string;
   level: string;
@@ -14,7 +15,7 @@ interface ModuleContent {
   sections: ModuleSection[];
 }
 
-interface ModuleSection {
+export interface ModuleSection {
   title: string;
   content: string;
   keyPoints?: string[];
@@ -25,7 +26,7 @@ interface ModuleSection {
   formula?: string;
 }
 
-const moduleData: Record<string, ModuleContent> = {
+const baseModuleData: Record<string, ModuleContent> = {
   foundations: {
     id: 'foundations',
     title: 'Foundations of Diagnostic Reasoning',
@@ -231,6 +232,12 @@ const moduleData: Record<string, ModuleContent> = {
       }
     ]
   }
+};
+
+// Combine base modules with additional modules
+const moduleData: Record<string, ModuleContent> = {
+  ...baseModuleData,
+  ...additionalModules
 };
 
 export default function ModuleViewer() {
