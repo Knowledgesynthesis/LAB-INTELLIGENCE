@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -187,10 +188,12 @@ export default function LearningModules() {
                 </div>
 
                 <div className="pt-2">
-                  <Button className="w-full" variant={isCompleted ? 'outline' : 'default'}>
-                    <BookOpen className="h-4 w-4 mr-2" />
-                    {isCompleted ? 'Review' : 'Start'} Module
-                  </Button>
+                  <Link to={`/modules/${module.id}`}>
+                    <Button className="w-full" variant={isCompleted ? 'outline' : 'default'}>
+                      <BookOpen className="h-4 w-4 mr-2" />
+                      {isCompleted ? 'Review' : 'Start'} Module
+                    </Button>
+                  </Link>
                 </div>
               </CardContent>
             </Card>
