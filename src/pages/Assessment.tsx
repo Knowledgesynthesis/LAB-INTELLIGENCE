@@ -1,10 +1,12 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { CheckSquare, Trophy, AlertCircle } from 'lucide-react';
+import { CheckSquare, Trophy, AlertCircle, CheckCircle, XCircle } from 'lucide-react';
 
 export default function Assessment() {
+  const [sampleAnswers, setSampleAnswers] = useState<(number | null)[]>([null, null, null]);
   const assessments = [
     {
       id: 'foundations-quiz',
@@ -55,7 +57,7 @@ export default function Assessment() {
       id: 'comprehensive',
       title: 'Comprehensive Assessment',
       type: 'Mixed',
-      questions: 30,
+      questions: 10,
       difficulty: 'Hard',
       module: 'All Modules',
       passingScore: 80
@@ -135,19 +137,12 @@ export default function Assessment() {
                     <p className="text-orange-600 dark:text-orange-400 font-bold">Not Started</p>
                   </div>
                 </div>
-                {(assessment.id === 'foundations-quiz' || assessment.id === 'bayesian-quiz' || assessment.id === 'ppv-npv-mastery') ? (
-                  <Link to={`/assessment/${assessment.id}`}>
-                    <Button className="w-full">
-                      <CheckSquare className="h-4 w-4 mr-2" />
-                      Start Assessment
-                    </Button>
-                  </Link>
-                ) : (
-                  <Button className="w-full" disabled>
+                <Link to={`/assessment/${assessment.id}`}>
+                  <Button className="w-full">
                     <CheckSquare className="h-4 w-4 mr-2" />
-                    Coming Soon
+                    Start Assessment
                   </Button>
-                )}
+                </Link>
               </CardContent>
             </Card>
           ))}
@@ -158,44 +153,86 @@ export default function Assessment() {
       <div>
         <h2 className="text-2xl font-bold mb-4">Sample Questions</h2>
         <div className="space-y-4">
-          {sampleQuestions.map((q, index) => (
-            <Card key={index}>
-              <CardHeader>
-                <CardTitle className="text-base">Question {index + 1}</CardTitle>
-                <CardDescription>{q.question}</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  {q.options.map((option, optIndex) => (
-                    <div
-                      key={optIndex}
-                      className={`p-3 rounded-md border ${
-                        optIndex === q.correct
-                          ? 'border-green-500 bg-green-500/10'
-                          : 'border-border'
-                      }`}
-                    >
-                      <div className="flex items-center space-x-2">
-                        <span className="font-mono font-bold">
-                          {String.fromCharCode(65 + optIndex)}.
-                        </span>
-                        <span>{option}</span>
-                        {optIndex === q.correct && (
-                          <Badge variant="secondary" className="ml-auto">Correct</Badge>
-                        )}
-                      </div>
+          {sampleQuestions.map((q, index) => {
+            const selectedAnswer = sampleAnswers[index];
+            const isAnswered = selectedAnswer !== null;
+            const isCorrect = selectedAnswer === q.correct;
+
+            return (
+              <Card key={index}>
+                <CardHeader>
+                  <CardTitle className="text-base">Question {index + 1}</CardTitle>
+                  <CardDescription>{q.question}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    {q.options.map((option, optIndex) => {
+                      const isSelected = selectedAnswer === optIndex;
+                      const isCorrectAnswer = optIndex === q.correct;
+
+                      return (
+                        <button
+                          key={optIndex}
+                          onClick={() => {
+                            if (!isAnswered) {
+                              const newAnswers = [...sampleAnswers];
+                              newAnswers[index] = optIndex;
+                              setSampleAnswers(newAnswers);
+                            }
+                          }}
+                          disabled={isAnswered}
+                          className={`w-full p-3 rounded-md border text-left transition-colors ${
+                            !isAnswered
+                              ? isSelected
+                                ? 'border-primary bg-primary/10'
+                                : 'border-border hover:border-primary/50'
+                              : isSelected && isCorrect
+                              ? 'border-green-500 bg-green-500/10'
+                              : isSelected && !isCorrect
+                              ? 'border-red-500 bg-red-500/10'
+                              : isCorrectAnswer
+                              ? 'border-green-500 bg-green-500/10'
+                              : 'border-border opacity-50'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-2">
+                              <span className="font-mono font-bold">
+                                {String.fromCharCode(65 + optIndex)}.
+                              </span>
+                              <span>{option}</span>
+                            </div>
+                            {isAnswered && isCorrectAnswer && (
+                              <CheckCircle className="h-5 w-5 text-green-600" />
+                            )}
+                            {isAnswered && isSelected && !isCorrect && (
+                              <XCircle className="h-5 w-5 text-red-600" />
+                            )}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {isAnswered && (
+                    <div className={`p-3 rounded-md border ${
+                      isCorrect
+                        ? 'bg-green-500/10 border-green-500/20'
+                        : 'bg-orange-500/10 border-orange-500/20'
+                    }`}>
+                      <p className={`text-sm font-medium mb-1 ${
+                        isCorrect
+                          ? 'text-green-600 dark:text-green-400'
+                          : 'text-orange-600 dark:text-orange-400'
+                      }`}>
+                        {isCorrect ? 'Correct!' : 'Incorrect'}
+                      </p>
+                      <p className="text-sm">{q.explanation}</p>
                     </div>
-                  ))}
-                </div>
-                <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-md">
-                  <p className="text-sm font-medium text-blue-600 dark:text-blue-400 mb-1">
-                    Explanation:
-                  </p>
-                  <p className="text-sm">{q.explanation}</p>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       </div>
 

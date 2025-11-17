@@ -5,6 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, CheckCircle, XCircle, Trophy } from 'lucide-react';
 import { useAppStore } from '@/stores/appStore';
+import {
+  additionalFoundationsQuestions,
+  additionalBayesianQuestions,
+  additionalPPVNPVQuestions,
+  rocAssessment,
+  stewardshipAssessment,
+  comprehensiveAssessment
+} from '@/data/assessmentData';
 
 interface Question {
   id: string;
@@ -129,7 +137,8 @@ const assessments: Record<string, AssessmentData> = {
         correctAnswer: 1,
         explanation: 'A positive test multiplies the pre-test odds by the LR+. With LR+ = 4, the odds are increased 4-fold.',
         type: 'calculation'
-      }
+      },
+      ...additionalFoundationsQuestions
     ]
   },
   'bayesian-quiz': {
@@ -211,7 +220,8 @@ const assessments: Record<string, AssessmentData> = {
         correctAnswer: 2,
         explanation: 'Pre-test odds = 0.80/0.20 = 4. Post-test odds = 4 × 0.2 = 0.8. Post-test probability = 0.8/(1+0.8) = 44% (approximately 50%)',
         type: 'calculation'
-      }
+      },
+      ...additionalBayesianQuestions
     ]
   },
   'ppv-npv-mastery': {
@@ -287,9 +297,13 @@ const assessments: Record<string, AssessmentData> = {
         correctAnswer: 0,
         explanation: 'High prevalence increases PPV (more true positives relative to false positives) but decreases NPV (more false negatives relative to true negatives).',
         type: 'mcq'
-      }
+      },
+      ...additionalPPVNPVQuestions
     ]
-  }
+  },
+  'roc-interpretation': rocAssessment,
+  'stewardship-cases': stewardshipAssessment,
+  'comprehensive': comprehensiveAssessment
 };
 
 export default function AssessmentQuiz() {
